@@ -1,4 +1,5 @@
-FROM golang:latest AS build
+# Use AWS ECR public image
+FROM public.ecr.aws/docker/library/golang:latest AS build
 
 WORKDIR /Users/richa/GolandProjects/GoAgentProject
 
@@ -6,7 +7,8 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -o logglyassignment .
 
-FROM alpine:latest
+# Use AWS ECR public image
+FROM public.ecr.aws/docker/library/alpine:latest
 
 WORKDIR /GoAgentProject/
 
