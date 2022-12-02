@@ -11,7 +11,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/jamespearly/loggly"
-	"github.com/joho/godotenv"
 	"io"
 	_ "io/ioutil"
 	"log"
@@ -73,12 +72,6 @@ func main() {
 			log.Fatal(err)
 		}
 
-		//load env var
-		err1 := godotenv.Load(".env")
-		if err1 != nil {
-			log.Fatal(err1)
-		}
-
 		bytes, errRead := io.ReadAll(response.Body)
 
 		defer func() {
@@ -127,41 +120,6 @@ func main() {
 		// Create table Movies
 		tableName := "rkanin-accuweather"
 
-		/*input := &dynamodb.CreateTableInput{
-			AttributeDefinitions: []*dynamodb.AttributeDefinition{
-				{
-					AttributeName: aws.String("LocalObservationDateTime"),
-					AttributeType: aws.String("S"),
-				},
-				{
-					AttributeName: aws.String("WeatherIcon"),
-					AttributeType: aws.String("N"),
-				},
-			},
-			KeySchema: []*dynamodb.KeySchemaElement{
-				{
-					AttributeName: aws.String("LocalObservationDateTime"),
-					KeyType:       aws.String("HASH"),
-				},
-				{
-					AttributeName: aws.String("WeatherIcon"),
-					KeyType:       aws.String("RANGE"),
-				},
-			},
-			ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
-				ReadCapacityUnits:  aws.Int64(10),
-				WriteCapacityUnits: aws.Int64(10),
-			},
-			TableName: aws.String(tableName),
-		}
-
-		_, err = svc.CreateTable(input)
-		if err != nil {
-			log.Fatalf("Got error calling CreateTable: %s", err)
-		}*/
-
-		//log.Print("Created the table", tableName)
-
 		av, erra := dynamodbattribute.MarshalMap(currentCondition[0])
 		if erra != nil {
 			log.Fatalf("Got error marshalling new movie item: %s", erra)
@@ -176,6 +134,7 @@ func main() {
 		if errb != nil {
 			log.Fatalf("Got error calling PutItem: %s", errb)
 		}
+
 		time.Sleep(1 * time.Hour)
 	}
 }
